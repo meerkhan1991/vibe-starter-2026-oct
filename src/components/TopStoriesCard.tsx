@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Article } from '../types';
-import { Image as ImageIcon } from 'lucide-react';
+import { Image as ImageIcon, Sparkles } from 'lucide-react';
 
 interface TopStoriesCardProps {
   leadArticle: Article;
@@ -19,10 +19,10 @@ export const TopStoriesCard: React.FC<TopStoriesCardProps> = ({
   const [showRealPhoto, setShowRealPhoto] = useState(false);
 
   return (
-    <section className="border border-[#121212] p-3.5 pb-4 mb-4 bg-white" data-purpose="top-stories-card">
+    <section className="border border-[#121212] p-3.5 pb-4 mb-4 bg-white shadow-2xs" data-purpose="top-stories-card">
       {/* Centered promo label */}
       <div className="text-center mb-3">
-        <p className="text-[13px] text-[#121212] font-sans font-normal">
+        <p className="text-[13px] text-[#121212] font-sans font-normal tracking-tight">
           These top stories are <span className="font-bold">free to read.</span>
         </p>
         <div className="w-14 h-[2px] bg-[#326891] mx-auto mt-2"></div>
@@ -34,10 +34,10 @@ export const TopStoriesCard: React.FC<TopStoriesCardProps> = ({
           onClick={() => onSelectArticle(leadArticle.id)}
           className="group block cursor-pointer"
         >
-          <h1 className="headline-serif text-[27px] font-bold text-[#121212] leading-[1.12] mb-2 tracking-tight group-hover:text-[#5a5a5a] transition-colors">
+          <h1 className="headline-serif text-[27px] sm:text-[29px] font-bold text-[#121212] leading-[1.12] mb-2 tracking-tight group-hover:text-[#5a5a5a] transition-colors">
             {leadArticle.title}
           </h1>
-          <p className="summary-serif text-[15px] text-[#333333] mb-2 leading-snug">
+          <p className="summary-serif text-[15px] sm:text-[16px] text-[#333333] mb-2 leading-snug font-normal">
             {leadArticle.summary}
           </p>
           <div className="text-[10px] tracking-wider text-[#727272] font-sans uppercase font-medium mb-3">
@@ -49,12 +49,12 @@ export const TopStoriesCard: React.FC<TopStoriesCardProps> = ({
         <figure className="m-0 mb-3 overflow-hidden">
           <div 
             onClick={() => onSelectArticle(leadArticle.id)}
-            className="cursor-pointer group relative"
+            className="cursor-pointer group relative overflow-hidden bg-[#ebe7f7]"
           >
             {showRealPhoto ? (
               <img
-                alt="Portrait of official leaving the Trump administration"
-                className="w-full h-[320px] object-cover object-top transition-transform duration-300 group-hover:scale-[1.01]"
+                alt="White House officials leaving the administration"
+                className="w-full h-auto min-h-[280px] max-h-[460px] object-cover object-top transition-transform duration-500 group-hover:scale-[1.02]"
                 loading="eager"
                 src={leadArticle.image}
               />
@@ -75,11 +75,11 @@ export const TopStoriesCard: React.FC<TopStoriesCardProps> = ({
                 e.stopPropagation();
                 setShowRealPhoto(!showRealPhoto);
               }}
-              className="text-[#2b6cb0] hover:underline flex items-center gap-1 cursor-pointer"
-              title="Toggle placeholder / photo"
+              className="text-[#2b6cb0] hover:underline flex items-center gap-1 cursor-pointer font-medium"
+              title="Toggle placeholder or photo"
             >
               <ImageIcon className="w-3 h-3" />
-              <span>{showRealPhoto ? 'Switch to Mockup Graphic' : 'Show Editorial Photo'}</span>
+              <span>{showRealPhoto ? 'Mockup Graphic Style' : 'Live Photography Style'}</span>
             </button>
             <figcaption className="text-right">
               {leadArticle.photographer || 'Tierney L. Cross/The New York Times'}
@@ -96,11 +96,11 @@ export const TopStoriesCard: React.FC<TopStoriesCardProps> = ({
             className="group block cursor-pointer"
           >
             <div className="flex items-start justify-between gap-2">
-              <h2 className="headline-serif text-[18px] font-bold text-[#121212] leading-snug group-hover:text-[#5a5a5a] transition-colors">
+              <h2 className="headline-serif text-[18px] sm:text-[19px] font-bold text-[#121212] leading-snug group-hover:text-[#5a5a5a] transition-colors">
                 {guilfoyleArticle.title}
               </h2>
             </div>
-            <div className="flex items-center gap-1.5 mt-2 text-[#727272] text-[11px] font-sans">
+            <div className="flex items-center gap-1.5 mt-2 text-[#727272] text-[11px] font-sans font-medium">
               <svg className="w-3.5 h-3.5 text-[#727272]" fill="currentColor" viewBox="0 0 20 20">
                 <path
                   clipRule="evenodd"
@@ -121,10 +121,10 @@ export const TopStoriesCard: React.FC<TopStoriesCardProps> = ({
             onClick={() => onSelectArticle(pressSecArticle.id)}
             className="group block cursor-pointer"
           >
-            <h2 className="headline-serif text-[18px] font-bold text-[#121212] leading-snug mb-1 group-hover:text-[#5a5a5a] transition-colors">
+            <h2 className="headline-serif text-[18px] sm:text-[19px] font-bold text-[#121212] leading-snug mb-1 group-hover:text-[#5a5a5a] transition-colors">
               {pressSecArticle.title}
             </h2>
-            <p className="summary-serif text-[13.5px] text-[#333333] leading-snug mb-2">
+            <p className="summary-serif text-[13.5px] sm:text-[14px] text-[#333333] leading-snug mb-2 font-normal">
               {pressSecArticle.summary}
             </p>
             <div className="text-[10px] tracking-wider text-[#727272] font-sans uppercase font-medium">

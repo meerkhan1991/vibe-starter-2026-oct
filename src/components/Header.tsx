@@ -1,53 +1,89 @@
 import React from 'react';
-import { Menu, User, Smartphone, Monitor } from 'lucide-react';
+import { Menu, Search, Smartphone, Monitor, Sun, TrendingUp, Sparkles } from 'lucide-react';
+import { NytLogo } from './NytLogo';
 
 interface HeaderProps {
   onOpenMenu: () => void;
   onOpenProfile: () => void;
   onOpenSubscribe: () => void;
+  onOpenSearch: () => void;
   isSubscriber: boolean;
   viewMode: 'mobile' | 'fluid';
   onToggleViewMode: () => void;
+  onSelectSection?: (section: string) => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   onOpenMenu,
   onOpenProfile,
   onOpenSubscribe,
+  onOpenSearch,
   isSubscriber,
   viewMode,
-  onToggleViewMode
+  onToggleViewMode,
+  onSelectSection
 }) => {
+  const sectionsList = [
+    'World', 'U.S.', 'Politics', 'Business', 'Opinion',
+    'Tech', 'Science', 'Health', 'Sports', 'Arts',
+    'Books', 'Style', 'Food', 'Travel', 'Games'
+  ];
+
   return (
     <header className="sticky top-0 z-40 bg-white border-b border-[#e2e2e2]">
-      {/* Device Frame View Switcher Floating Badge (Top subtle bar) */}
-      <div className="bg-[#121212] text-white px-3 py-1 text-[11px] flex items-center justify-between font-sans">
-        <span className="flex items-center gap-1.5 opacity-90">
-          <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-          <span>NYT Live Digital Edition</span>
-        </span>
+      {/* Top Pro Control / Global Status Bar */}
+      <div className="bg-[#121212] text-white px-3 py-1.5 text-[11px] flex items-center justify-between font-sans border-b border-neutral-800">
         <div className="flex items-center gap-3">
+          <span className="flex items-center gap-1.5 font-medium">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>U.S. Edition</span>
+          </span>
+          <span className="hidden sm:inline-block text-neutral-400">•</span>
+          <span className="hidden sm:flex items-center gap-1 text-neutral-300">
+            <Sun className="w-3 h-3 text-amber-400" />
+            <span>New York 64°F</span>
+          </span>
+          <span className="hidden md:inline-block text-neutral-400">•</span>
+          <span className="hidden md:flex items-center gap-1 text-neutral-300">
+            <TrendingUp className="w-3 h-3 text-emerald-400" />
+            <span>S&amp;P 500 +0.42%</span>
+          </span>
+        </div>
+
+        <div className="flex items-center gap-2.5">
+          {/* Search Shortcut */}
+          <button
+            onClick={onOpenSearch}
+            className="flex items-center gap-1 text-neutral-300 hover:text-white transition-colors cursor-pointer text-[10px] uppercase font-bold bg-neutral-800 px-2 py-0.5 rounded-xs"
+            title="Search articles (Cmd+K)"
+          >
+            <Search className="w-3 h-3" />
+            <span className="hidden sm:inline">Search</span>
+            <kbd className="hidden sm:inline text-[9px] bg-neutral-700 px-1 rounded ml-1 font-mono">⌘K</kbd>
+          </button>
+
+          {/* View mode toggle */}
           <button
             onClick={onToggleViewMode}
-            className="flex items-center gap-1 hover:text-amber-300 transition-colors cursor-pointer text-[10px] uppercase font-bold"
-            title="Toggle between Mobile iOS frame and Fluid view"
+            className="flex items-center gap-1 text-neutral-300 hover:text-amber-300 transition-colors cursor-pointer text-[10px] uppercase font-bold bg-neutral-800 px-2 py-0.5 rounded-xs"
+            title="Toggle between Mobile iPhone View and Fluid Grid"
           >
             {viewMode === 'mobile' ? (
               <>
                 <Smartphone className="w-3 h-3 text-amber-400" />
-                <span>Mobile Frame</span>
+                <span className="hidden sm:inline">Mobile Frame</span>
               </>
             ) : (
               <>
                 <Monitor className="w-3 h-3 text-blue-400" />
-                <span>Fluid Screen</span>
+                <span className="hidden sm:inline">Desktop Grid</span>
               </>
             )}
           </button>
         </div>
       </div>
 
-      {/* Main Masthead Mobile Row */}
+      {/* Main Masthead Row */}
       <div className="flex items-center justify-between px-3.5 h-12">
         {/* Left: Hamburger Menu Icon */}
         <button
@@ -63,31 +99,42 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Center: Iconic NYT Logo */}
         <a
-          className="nyt-logo text-[28px] sm:text-[32px] tracking-normal font-normal select-none leading-none pt-0.5 text-center text-[#121212] cursor-pointer hover:opacity-90"
+          className="nyt-logo text-[28px] sm:text-[34px] tracking-normal font-normal select-none leading-none pt-0.5 text-center text-[#121212] cursor-pointer hover:opacity-90"
           href="#"
           onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
         >
           The New York Times
         </a>
 
-        {/* Right: User Profile Icon */}
-        <button
-          onClick={onOpenProfile}
-          aria-label="User Account"
-          className="p-1 -mr-1 text-[#121212] focus:outline-none cursor-pointer hover:opacity-70 transition-opacity relative"
-          type="button"
-        >
-          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-            <path
-              clipRule="evenodd"
-              d="M12 2.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zm-8 16.25c0-3.175 4.03-5.25 8-5.25s8 2.075 8 5.25V21H4v-2.25z"
-              fillRule="evenodd"
-            ></path>
-          </svg>
-          {isSubscriber && (
-            <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-blue-600 rounded-full" />
-          )}
-        </button>
+        {/* Right: Search & User Profile */}
+        <div className="flex items-center gap-1.5 -mr-1">
+          <button
+            onClick={onOpenSearch}
+            aria-label="Search"
+            className="p-1 text-[#121212] focus:outline-none cursor-pointer hover:opacity-70 transition-opacity sm:hidden"
+            type="button"
+          >
+            <Search className="w-5 h-5" />
+          </button>
+          
+          <button
+            onClick={onOpenProfile}
+            aria-label="User Account"
+            className="p-1 text-[#121212] focus:outline-none cursor-pointer hover:opacity-70 transition-opacity relative"
+            type="button"
+          >
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                clipRule="evenodd"
+                d="M12 2.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zm-8 16.25c0-3.175 4.03-5.25 8-5.25s8 2.075 8 5.25V21H4v-2.25z"
+                fillRule="evenodd"
+              ></path>
+            </svg>
+            {isSubscriber && (
+              <span className="absolute top-0.5 right-0.5 w-2 h-2 bg-blue-600 rounded-full border border-white" />
+            )}
+          </button>
+        </div>
       </div>
 
       {/* Secondary Meta Bar: Date & Subscribe Button */}
@@ -96,8 +143,9 @@ export const Header: React.FC<HeaderProps> = ({
           Wednesday, October 14, 2026
         </span>
         {isSubscriber ? (
-          <span className="text-[10px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-300">
-            Subscriber Edition
+          <span className="text-[10px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-300 flex items-center gap-1">
+            <Sparkles className="w-3 h-3 text-emerald-600" />
+            <span>All-Access Member</span>
           </span>
         ) : (
           <button
@@ -108,6 +156,21 @@ export const Header: React.FC<HeaderProps> = ({
           </button>
         )}
       </div>
+
+      {/* Horizontal Nav Bar for Desktop View / Expanded View */}
+      {viewMode === 'fluid' && (
+        <nav className="border-t border-[#e2e2e2] px-3.5 py-1.5 overflow-x-auto no-scrollbar hidden sm:flex items-center justify-center gap-4 text-[11px] font-sans font-medium text-[#333]">
+          {sectionsList.map(sec => (
+            <button
+              key={sec}
+              onClick={() => onSelectSection?.(sec)}
+              className="hover:text-[#121212] hover:underline whitespace-nowrap cursor-pointer transition-colors"
+            >
+              {sec}
+            </button>
+          ))}
+        </nav>
+      )}
     </header>
   );
 };

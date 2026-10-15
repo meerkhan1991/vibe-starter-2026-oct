@@ -20,6 +20,8 @@ import { SportsModal } from './components/SportsModal';
 import { NavigationDrawer } from './components/NavigationDrawer';
 import { SubscribeModal } from './components/SubscribeModal';
 import { ProfileModal } from './components/ProfileModal';
+import { SearchModal } from './components/SearchModal';
+import { IPhoneFrame } from './components/IPhoneFrame';
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState<ViewScreen>('front-page');
@@ -33,6 +35,7 @@ export default function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSubscribeOpen, setIsSubscribeOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isSubscriber, setIsSubscriber] = useState(false);
   
   // Saved Articles
@@ -71,134 +74,192 @@ export default function App() {
     .filter((a): a is Article => Boolean(a));
 
   return (
-    <div className={`min-h-screen bg-[#f4f4f4] flex flex-col items-center selection:bg-[#121212] selection:text-white ${viewMode === 'mobile' ? 'py-0 sm:py-6' : 'py-0'}`}>
-      {/* Device wrapper container */}
-      <div className={`w-full bg-white transition-all duration-300 shadow-xl ${
-        viewMode === 'mobile' 
-          ? 'max-w-[430px] min-h-screen sm:min-h-[880px] sm:rounded-[24px] overflow-hidden border border-[#d8d8d8]' 
-          : 'max-w-4xl min-h-screen'
-      }`}>
-        {/* Active Screen Router */}
-        {currentScreen === 'article' && (
-          <ArticleReader
-            article={currentArticle}
-            onBack={() => setCurrentScreen('front-page')}
-            onSelectArticle={openArticle}
-            isBookmarked={bookmarkedIds.includes(currentArticle.id)}
-            onToggleBookmark={toggleBookmark}
-          />
-        )}
+    <div className="min-h-screen bg-[#ededed] flex flex-col items-center selection:bg-[#121212] selection:text-white">
+      {/* Search Modal */}
+      <SearchModal
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+        onSelectArticle={openArticle}
+        onSelectGame={handleSelectGame}
+      />
 
-        {currentScreen === 'game-wordle' && (
-          <WordleGame onBack={() => setCurrentScreen('front-page')} />
-        )}
-
-        {currentScreen === 'game-mini' && (
-          <TheMiniGame onBack={() => setCurrentScreen('front-page')} />
-        )}
-
-        {currentScreen === 'game-connections' && (
-          <ConnectionsGame onBack={() => setCurrentScreen('front-page')} />
-        )}
-
-        {currentScreen === 'game-spelling-bee' && (
-          <SpellingBeeGame onBack={() => setCurrentScreen('front-page')} />
-        )}
-
-        {currentScreen === 'polls-tracker' && (
-          <PollsModal
-            initialTab={pollsInitialTab}
-            onBack={() => setCurrentScreen('front-page')}
-          />
-        )}
-
-        {currentScreen === 'recipe' && (
-          <RecipeModal
-            article={ARTICLES['meatballs-recipe']}
-            onBack={() => setCurrentScreen('front-page')}
-          />
-        )}
-
-        {currentScreen === 'sports-match' && (
-          <SportsModal
-            article={ARTICLES['athletic-brewers']}
-            onBack={() => setCurrentScreen('front-page')}
-          />
-        )}
-
-        {/* FRONT PAGE SCREEN */}
-        {currentScreen === 'front-page' && (
-          <div className="flex flex-col min-h-screen">
-            {/* Header */}
-            <Header
-              onOpenMenu={() => setIsMenuOpen(true)}
-              onOpenProfile={() => setIsProfileOpen(true)}
-              onOpenSubscribe={() => setIsSubscribeOpen(true)}
-              isSubscriber={isSubscriber}
-              viewMode={viewMode}
-              onToggleViewMode={() => setViewMode(viewMode === 'mobile' ? 'fluid' : 'mobile')}
+      {/* When in mobile frame mode, wrap with iPhone chassis on desktop */}
+      <IPhoneFrame active={viewMode === 'mobile'}>
+        <div className={`w-full bg-white transition-all duration-300 min-h-screen ${
+          viewMode === 'fluid' ? 'max-w-5xl shadow-md border-x border-[#d8d8d8]' : 'max-w-md'
+        }`}>
+          {/* Active Screen Router */}
+          {currentScreen === 'article' && (
+            <ArticleReader
+              article={currentArticle}
+              onBack={() => setCurrentScreen('front-page')}
+              onSelectArticle={openArticle}
+              isBookmarked={bookmarkedIds.includes(currentArticle.id)}
+              onToggleBookmark={toggleBookmark}
             />
+          )}
 
-            {/* Main Content matching exact layout */}
-            <main className="max-w-md mx-auto px-3.5 pt-3 w-full flex-1">
-              {/* TOP STORIES FRAMED BOX */}
-              <TopStoriesCard
-                leadArticle={ARTICLES['lead-trump-women']}
-                guilfoyleArticle={ARTICLES['guilfoyle']}
-                pressSecArticle={ARTICLES['press-secretary']}
-                onSelectArticle={openArticle}
-              />
+          {currentScreen === 'game-wordle' && (
+            <WordleGame onBack={() => setCurrentScreen('front-page')} />
+          )}
 
-              {/* RUSSIA-UKRAINE WAR SECTION */}
-              <UkraineSection
-                leadArticle={ARTICLES['ukraine-satellite']}
-                dieselArticle={ARTICLES['diesel-deal']}
-                intelArticle={ARTICLES['us-intelligence']}
-                onSelectArticle={openArticle}
-              />
+          {currentScreen === 'game-mini' && (
+            <TheMiniGame onBack={() => setCurrentScreen('front-page')} />
+          )}
 
-              {/* THE EVENING BRIEFING */}
-              <EveningBriefing
-                article={ARTICLES['evening-briefing']}
-                onSelectArticle={openArticle}
-              />
+          {currentScreen === 'game-connections' && (
+            <ConnectionsGame onBack={() => setCurrentScreen('front-page')} />
+          )}
 
-              {/* ELECTION DISPATCHES SECTION */}
-              <ElectionSection
-                leadArticle={ARTICLES['texas-senate']}
-                onSelectArticle={openArticle}
-                onOpenPolls={openPolls}
-              />
+          {currentScreen === 'game-spelling-bee' && (
+            <SpellingBeeGame onBack={() => setCurrentScreen('front-page')} />
+          )}
 
-              {/* NYT FEATURES & LIFESTYLE GRID */}
-              <section className="border-t-2 border-[#121212] pt-3 pb-2 mb-6" data-purpose="services-grid">
-                {/* 4 Interactive Games */}
-                <GamesStrip onSelectGame={handleSelectGame} />
-
-                {/* Cooking & The Athletic teasers */}
-                <LifestyleSection
-                  recipeArticle={ARTICLES['meatballs-recipe']}
-                  sportsArticle={ARTICLES['athletic-brewers']}
-                  onOpenRecipe={() => setCurrentScreen('recipe')}
-                  onOpenSports={() => setCurrentScreen('sports-match')}
-                />
-              </section>
-            </main>
-
-            {/* Footer */}
-            <Footer
-              onOpenSubscribe={() => setIsSubscribeOpen(true)}
-              onOpenLegal={(topic) => setLegalNotice(`Information about ${topic} is available in The New York Times Help Center.`)}
+          {currentScreen === 'polls-tracker' && (
+            <PollsModal
+              initialTab={pollsInitialTab}
+              onBack={() => setCurrentScreen('front-page')}
             />
-          </div>
-        )}
-      </div>
+          )}
+
+          {currentScreen === 'recipe' && (
+            <RecipeModal
+              article={ARTICLES['meatballs-recipe']}
+              onBack={() => setCurrentScreen('front-page')}
+            />
+          )}
+
+          {currentScreen === 'sports-match' && (
+            <SportsModal
+              article={ARTICLES['athletic-brewers']}
+              onBack={() => setCurrentScreen('front-page')}
+            />
+          )}
+
+          {/* FRONT PAGE SCREEN */}
+          {currentScreen === 'front-page' && (
+            <div className="flex flex-col min-h-screen">
+              {/* Header */}
+              <Header
+                onOpenMenu={() => setIsMenuOpen(true)}
+                onOpenProfile={() => setIsProfileOpen(true)}
+                onOpenSubscribe={() => setIsSubscribeOpen(true)}
+                onOpenSearch={() => setIsSearchOpen(true)}
+                isSubscriber={isSubscriber}
+                viewMode={viewMode}
+                onToggleViewMode={() => setViewMode(viewMode === 'mobile' ? 'fluid' : 'mobile')}
+                onSelectSection={(sec) => {
+                  if (sec === 'Games') setCurrentScreen('game-wordle');
+                  else if (sec === 'Food') setCurrentScreen('recipe');
+                  else if (sec === 'Sports') setCurrentScreen('sports-match');
+                  else if (sec === 'Politics') openPolls('Senate');
+                }}
+              />
+
+              {/* Responsive Layout: Single column in mobile mode, Multi-column editorial grid in fluid mode */}
+              <main className="px-3.5 pt-3 w-full flex-1">
+                {viewMode === 'fluid' ? (
+                  /* Desktop / Tablet Multi-Column Editorial Grid */
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-6 max-w-5xl mx-auto">
+                    {/* Left Main Editorial Column (7 cols) */}
+                    <div className="md:col-span-7 space-y-4">
+                      <TopStoriesCard
+                        leadArticle={ARTICLES['lead-trump-women']}
+                        guilfoyleArticle={ARTICLES['guilfoyle']}
+                        pressSecArticle={ARTICLES['press-secretary']}
+                        onSelectArticle={openArticle}
+                      />
+
+                      <UkraineSection
+                        leadArticle={ARTICLES['ukraine-satellite']}
+                        dieselArticle={ARTICLES['diesel-deal']}
+                        intelArticle={ARTICLES['us-intelligence']}
+                        onSelectArticle={openArticle}
+                      />
+                    </div>
+
+                    {/* Right Secondary Column (5 cols) */}
+                    <div className="md:col-span-5 space-y-4 border-t md:border-t-0 md:border-l border-[#e2e2e2] md:pl-6">
+                      <EveningBriefing
+                        article={ARTICLES['evening-briefing']}
+                        onSelectArticle={openArticle}
+                      />
+
+                      <ElectionSection
+                        leadArticle={ARTICLES['texas-senate']}
+                        onSelectArticle={openArticle}
+                        onOpenPolls={openPolls}
+                      />
+
+                      <section className="border-t-2 border-[#121212] pt-3 pb-2 mb-6" data-purpose="services-grid">
+                        <GamesStrip onSelectGame={handleSelectGame} />
+
+                        <LifestyleSection
+                          recipeArticle={ARTICLES['meatballs-recipe']}
+                          sportsArticle={ARTICLES['athletic-brewers']}
+                          onOpenRecipe={() => setCurrentScreen('recipe')}
+                          onOpenSports={() => setCurrentScreen('sports-match')}
+                        />
+                      </section>
+                    </div>
+                  </div>
+                ) : (
+                  /* Mobile Single Column Matching Exact Screenshot */
+                  <div className="max-w-md mx-auto">
+                    <TopStoriesCard
+                      leadArticle={ARTICLES['lead-trump-women']}
+                      guilfoyleArticle={ARTICLES['guilfoyle']}
+                      pressSecArticle={ARTICLES['press-secretary']}
+                      onSelectArticle={openArticle}
+                    />
+
+                    <UkraineSection
+                      leadArticle={ARTICLES['ukraine-satellite']}
+                      dieselArticle={ARTICLES['diesel-deal']}
+                      intelArticle={ARTICLES['us-intelligence']}
+                      onSelectArticle={openArticle}
+                    />
+
+                    <EveningBriefing
+                      article={ARTICLES['evening-briefing']}
+                      onSelectArticle={openArticle}
+                    />
+
+                    <ElectionSection
+                      leadArticle={ARTICLES['texas-senate']}
+                      onSelectArticle={openArticle}
+                      onOpenPolls={openPolls}
+                    />
+
+                    <section className="border-t-2 border-[#121212] pt-3 pb-2 mb-6" data-purpose="services-grid">
+                      <GamesStrip onSelectGame={handleSelectGame} />
+
+                      <LifestyleSection
+                        recipeArticle={ARTICLES['meatballs-recipe']}
+                        sportsArticle={ARTICLES['athletic-brewers']}
+                        onOpenRecipe={() => setCurrentScreen('recipe')}
+                        onOpenSports={() => setCurrentScreen('sports-match')}
+                      />
+                    </section>
+                  </div>
+                )}
+              </main>
+
+              {/* Footer */}
+              <Footer
+                onOpenSubscribe={() => setIsSubscribeOpen(true)}
+                onOpenLegal={(topic) => setLegalNotice(`Information about ${topic} is available in The New York Times Help Center.`)}
+              />
+            </div>
+          )}
+        </div>
+      </IPhoneFrame>
 
       {/* Legal Notice Toast */}
       {legalNotice && (
         <div className="fixed bottom-4 left-1/2 -translate-x-1/2 bg-[#121212] text-white px-4 py-2 rounded shadow-lg text-[12px] font-medium z-50 flex items-center gap-3 animate-fade-in">
           <span>{legalNotice}</span>
-          <button onClick={() => setLegalNotice(null)} className="text-gray-400 hover:text-white font-bold">✕</button>
+          <button onClick={() => setLegalNotice(null)} className="text-gray-400 hover:text-white font-bold cursor-pointer">✕</button>
         </div>
       )}
 
@@ -208,13 +269,14 @@ export default function App() {
         onClose={() => setIsMenuOpen(false)}
         onSelectSection={(sec) => {
           setIsMenuOpen(false);
-          // If games section, open games
           if (sec.includes('Games')) {
             setCurrentScreen('game-wordle');
           } else if (sec.includes('Food')) {
             setCurrentScreen('recipe');
           } else if (sec.includes('Sports')) {
             setCurrentScreen('sports-match');
+          } else if (sec.includes('Politics')) {
+            openPolls('Senate');
           } else {
             setCurrentScreen('front-page');
           }
