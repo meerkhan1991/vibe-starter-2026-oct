@@ -1,0 +1,6 @@
+{
+  "name": "The New York Times - Digital Edition",
+  "description": "An authentic New York Times mobile and desktop web experience featuring breaking news, election dispatches, interactive reader view, comments, and playable Games & Puzzles including Wordle and The Mini.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
